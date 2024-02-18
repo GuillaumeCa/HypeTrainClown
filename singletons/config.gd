@@ -4,6 +4,7 @@ var config_filename = "user://config.cfg"
 var config
 
 func _ready():
+	print("init config")
 	init_config()
 
 func init_config():
@@ -12,9 +13,11 @@ func init_config():
 		print(config)
 	else:
 		var cfg = {
-			"username": ""
+			"username": "",
+			"train_scale": 1.0
 		}
 		save_config(cfg)
+		config = cfg
 
 func save_config(cfg: Dictionary):
 	var f = FileAccess.open(config_filename, FileAccess.WRITE)

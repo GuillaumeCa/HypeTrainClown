@@ -1,7 +1,11 @@
 extends Control
 
+@onready var config = Config.config
+
+
 func _ready():
-	$Panel/Margin/VBox/HBoxInput/UsernameInput.text = Config.config["username"]
+	$Panel/Margin/VBox/HBoxInput/UsernameInput.text = config["username"]
+	$Panel/Margin/VBox/HSlider.value = config["train_scale"]
 
 func _on_sub_pressed():
 	call_deferred("call_twitch", "channel.subscribe")
@@ -17,10 +21,13 @@ func call_twitch(event):
 
 
 func _on_h_slider_value_changed(value):
-	Main.train_scale = value
+	config["train_scale"] = value
+	Config.save_config(config)
 
 
 func _on_validate_pressed():
 	var username = $Panel/Margin/VBox/HBoxInput/UsernameInput.text
-	Config.save_config({ "username": username })
+	var config = Config.config
+	config["username"] = username
+	Config.save_config(config)
 	hide()

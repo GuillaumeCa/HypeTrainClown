@@ -18,7 +18,6 @@ var api: TwitchAPIConnection
 var eventsub: TwitchEventSubConnection
 
 
-
 # to start the debug server with twitch cli: twitch event websocket start-server
 #const url = "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30"
 const url = "ws://127.0.0.1:8080/ws"
@@ -26,7 +25,9 @@ var train_offset = 75
 var train_init_voffset = 15.0
 var speed = 30.0
 
-static var train_scale = 1.0
+var train_scale = 1.0:
+	get:
+		return config["train_scale"]
 
 var current_speed = 0.0
 
@@ -40,6 +41,7 @@ var config
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	config = Config.config
+	
 	#ProjectSettings.set("rendering/viewport/transparent_background", true)
 	#ProjectSettings.set("application/boot_splash/bg_color", Color(0, 0, 0, 0))
 	#ProjectSettings.set("display/window/size/transparent", true)
@@ -98,6 +100,8 @@ func setup_twitch_connection():
 
 
 func _process(delta):
+	var i = 0
+	var prev_progress = 0
 	for path: PathFollow2D in wagons:
 		path.scale = Vector2(train_scale, train_scale)
 		if hype_mode:
@@ -106,9 +110,14 @@ func _process(delta):
 		else:
 			current_speed = lerp(current_speed, 0.0, 0.05)
 			path.v_offset = lerp(path.v_offset, train_init_voffset * train_scale, 0.07)
-
+		if i > 0:
+			path.progress = prev_progress - (train_offset * train_scale)
 		path.progress = path.progress + current_speed * delta
 		path.modulate.a = lerp(path.modulate.a, 1.0 if hype_mode else 0.0, 0.2)
+		
+		
+		prev_progress = path.progress
+		i += 1
 
 	$Track.width = 20 * train_scale
 	
