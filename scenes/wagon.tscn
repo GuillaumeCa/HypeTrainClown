@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://ou0qqh6hxrbx"]
+
+[ext_resource type="Script" path="res://scenes/wagon.gd" id="1_ug03l"]
+[ext_resource type="Texture2D" uid="uid://uvqqutk3jqdw" path="res://assets/textures/tram_microtech.png" id="2_d67n1"]
+[ext_resource type="PackedScene" uid="uid://bx5fj5iwgsjof" path="res://scenes/clown.tscn" id="2_quynx"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u0tcy"]
+particle_flag_disable_z = true
+angle_min = -46.0
+angle_max = 70.9
+direction = Vector3(-1, 0, 0)
+spread = 8.478
+initial_velocity_min = 14.49
+initial_velocity_max = 14.49
+gravity = Vector3(0, 0, 0)
+
+[node name="Wagon" type="PathFollow2D"]
+rotation = 0.000877963
+script = ExtResource("1_ug03l")
+clown_scene = ExtResource("2_quynx")
+
+[node name="Start" type="Marker2D" parent="."]
+position = Vector2(24, -3)
+
+[node name="TramMicrotech" type="Sprite2D" parent="."]
+texture_filter = 3
+position = Vector2(0, -3.435)
+rotation = -0.00262696
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_d67n1")
+metadata/_edit_lock_ = true
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(-35.9973, 3.03161)
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_u0tcy")
+lifetime = 2.0
