@@ -36,7 +36,7 @@ func _ready():
 	
 
 func setup_twitch_connection():
-	ui.add_log("Connection à twitch en cours...")
+	ui.add_log("Connexion à twitch en cours...")
 	# We will login using the Implicit Grant Flow, which only requires a client_id.
 	# Alternatively, you can use the Authorization Code Grant Flow or the Client Credentials Grant Flow.
 	# Note that the Client Credentials Grant Flow will only return an AppAccessToken, which can not be used
@@ -45,8 +45,8 @@ func setup_twitch_connection():
 	# For the auth to work, we need to poll it regularly.
 	get_tree().process_frame.connect(auth.poll) # You can also use a timer if you don't want to poll on every frame.
 
-	# Next, we actually get our token to authenticate. We want to be able to read and write messages,
-	# so we request the required scopes. See https://dev.twitch.tv/docs/authentication/scopes/#twitch-access-token-scopes
+	# Next, we actually get our token to authenticate. 
+	# See https://dev.twitch.tv/docs/authentication/scopes/#twitch-access-token-scopes
 	var token : UserAccessToken = await(auth.login(client_id, [
 		"channel:read:hype_train",
 		"channel:read:subscriptions",
@@ -63,18 +63,22 @@ func setup_twitch_connection():
 	# For everything to work, the id connection has to be polled regularly.
 	get_tree().process_frame.connect(id.poll)
 	
-	ui.add_log("Connection au évenements twitch...")
+	ui.add_log("Connexion aux évenements twitch...")
 	await(eventsub.connect_to_eventsub())
 	eventsub.event.connect(Master.send_event)
+	ui.add_log("Connexion réussi !")
 	
 	var user_ids : Dictionary = await(api.get_users_by_name([username]))
 	if (user_ids.has("data") && user_ids["data"].size() > 0):
 		var user_id : String = user_ids["data"][0]["id"]
 		print("Found user '%s' with id: %s" % [username, user_id])
+		ui.add_log("Utilisateur '%s' trouvé avec l'id: %s" % [username, user_id])
+		
 		eventsub.subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, "1", {"broadcaster_user_id": user_id})
 		eventsub.subscribe_event(Master.HYPE_TRAIN_END_EVENT, "1", {"broadcaster_user_id": user_id})
 		eventsub.subscribe_event(Master.SUBSCRIBE_EVENT, "1", {"broadcaster_user_id": user_id})
 		eventsub.subscribe_event(Master.RESUBSCRIBE_EVENT, "1", {"broadcaster_user_id": user_id})
+	
 
 func on_session_received():
 	print("session received")
@@ -122,4 +126,5 @@ func on_close(window):
 
 func _on_ui_update_username():
 	if not OS.is_debug_build():
+		username = config["username"]
 		setup_twitch_connection()
