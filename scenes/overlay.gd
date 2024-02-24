@@ -46,8 +46,8 @@ func handle_sub(event):
 	var login = event["user_login"]
 	
 	# if user is already on the train don't add it again
-	#if login in subs:
-		#return
+	if login in subs:
+		return
 	subs[login] = 1
 	prints("user", user, "just subbed !")
 	

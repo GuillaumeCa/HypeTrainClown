@@ -26,7 +26,7 @@ func _ready():
 	username = config["username"]
 	
 	# size of the config window
-	get_window().size = Vector2i(600, 400)
+	#get_window().size = Vector2i(900, 400)
 
 	if not OS.is_debug_build():
 		if username:
@@ -54,6 +54,7 @@ func setup_twitch_connection():
 	
 	if (token == null):
 		# Authentication failed. Abort.
+		ui.add_log("L'authentification a échoué.")
 		return
 
 	# Store the token in the ID connection, create all other connections.
@@ -74,11 +75,20 @@ func setup_twitch_connection():
 		print("Found user '%s' with id: %s" % [username, user_id])
 		ui.add_log("Utilisateur '%s' trouvé avec l'id: %s" % [username, user_id])
 		
-		eventsub.subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, "1", {"broadcaster_user_id": user_id})
-		eventsub.subscribe_event(Master.HYPE_TRAIN_END_EVENT, "1", {"broadcaster_user_id": user_id})
-		eventsub.subscribe_event(Master.SUBSCRIBE_EVENT, "1", {"broadcaster_user_id": user_id})
-		eventsub.subscribe_event(Master.RESUBSCRIBE_EVENT, "1", {"broadcaster_user_id": user_id})
-	
+		subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, user_id)
+		subscribe_event(Master.HYPE_TRAIN_END_EVENT, user_id)
+		subscribe_event(Master.SUBSCRIBE_EVENT, user_id)
+		subscribe_event(Master.RESUBSCRIBE_EVENT, user_id)
+	else:
+		ui.add_log("Utilisateur non trouvé")
+
+func subscribe_event(type, user_id):
+	var sub = await eventsub.subscribe_event(type, "1", {"broadcaster_user_id": user_id})
+	if sub == -1:
+		ui.add_log("Impossible de se connecter à l'évenement: " + type)
+	else:
+		ui.add_log("Connexion à l'évenement " + type + " réussie")
+
 
 func on_session_received():
 	print("session received")
@@ -125,6 +135,6 @@ func on_close(window):
 
 
 func _on_ui_update_username():
-	if not OS.is_debug_build():
-		username = config["username"]
+	username = config["username"]
+	if not OS.is_debug_build() and username:
 		setup_twitch_connection()

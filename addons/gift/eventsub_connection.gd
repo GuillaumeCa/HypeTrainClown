@@ -102,7 +102,7 @@ func process_event(data : PackedByteArray) -> void:
 
 # Refer to https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/ for details on
 # which API versions are available and which conditions are required.
-func subscribe_event(event_name : String, version : String, conditions : Dictionary) -> void:
+func subscribe_event(event_name : String, version : String, conditions : Dictionary) -> int:
 	var data : Dictionary = {}
 	data["type"] = event_name
 	data["version"] = version
@@ -114,7 +114,8 @@ func subscribe_event(event_name : String, version : String, conditions : Diction
 	var response = await(api.create_eventsub_subscription(data))
 	if (response.has("error")):
 		print("Subscription failed for event '%s'. Error %s (%s): %s" % [event_name, response["status"], response["error"], response["message"]])
-		return
+		return -1
 	elif (response.is_empty()):
-		return
+		return -1
+	return 0
 	print("Now listening to '%s' events." % event_name)

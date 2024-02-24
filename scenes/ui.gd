@@ -8,6 +8,9 @@ signal open_overlay
 signal update_username
 
 
+var demo_users = ["Ddurieux", "StazHopper", "Balokuclem", "Dguillaume"]
+
+
 func _ready():
 	$Panel/Margin/VBox/HBoxInput/UsernameInput.text = config["username"]
 	$Panel/Margin/VBox/HBoxContainer/HSlider.value = config["train_scale"]
@@ -68,3 +71,16 @@ func handle_events(type: String, data: Dictionary):
 		Master.RESUBSCRIBE_EVENT:
 			add_log("Nouveau sub: " + data["user_name"])
 			
+
+
+func _on_demo_start_pressed():
+	Master.send_event(Master.HYPE_TRAIN_BEGIN_EVENT, {})
+
+
+func _on_demo_sub_pressed():
+	var user = demo_users[randi() % demo_users.size()] + str(randi_range(0, 100))
+	Master.send_event(Master.SUBSCRIBE_EVENT, { "user_name": user, "user_login": user })
+
+
+func _on_demo_end_pressed():
+	Master.send_event(Master.HYPE_TRAIN_END_EVENT, {})

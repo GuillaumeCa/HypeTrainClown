@@ -10,12 +10,13 @@ texture = ExtResource("1_m68ud")
 script = ExtResource("2_v7ar1")
 
 [node name="Label" type="Label" parent="."]
-modulate = Color(1, 1, 1, 0)
 offset_left = -128.0
 offset_top = -306.0
 offset_right = 1547.0
 offset_bottom = -101.0
 rotation = -0.776672
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 80
 theme_override_font_sizes/font_size = 150
 text = "pseudo"
 
