@@ -13,15 +13,9 @@ script = ExtResource("1_ycrwm")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -149.0
-offset_top = -28.0
-offset_right = 149.0
-offset_bottom = 98.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -41,6 +35,10 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 theme_override_constants/separation = 9
 
+[node name="Label" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Login Twitch"
+
 [node name="HBoxInput" type="HBoxContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
 
@@ -53,32 +51,65 @@ placeholder_text = "Nom d'utilisateur"
 layout_mode = 2
 text = "OK"
 
-[node name="HSlider" type="HSlider" parent="Panel/Margin/VBox"]
+[node name="Label2" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
+text = "Echelle d'affichage"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ScaleLabel" type="Label" parent="Panel/Margin/VBox/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "1.0"
+
+[node name="HSlider" type="HSlider" parent="Panel/Margin/VBox/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 min_value = 1.0
 max_value = 2.0
 step = 0.05
 value = 1.0
 
-[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox"]
+[node name="OpenOverlay" type="Button" parent="Panel/Margin/VBox"]
 layout_mode = 2
-alignment = 1
+text = "Ouvrir overlay"
 
-[node name="HypeStart" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="debug" type="VBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="Panel/Margin/VBox/debug"]
+layout_mode = 2
+text = "Debug"
+
+[node name="DebugMenu" type="HBoxContainer" parent="Panel/Margin/VBox/debug"]
+layout_mode = 2
+
+[node name="HypeStart" type="Button" parent="Panel/Margin/VBox/debug/DebugMenu"]
 layout_mode = 2
 text = "Hype Start
 "
 
-[node name="Sub" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="Sub" type="Button" parent="Panel/Margin/VBox/debug/DebugMenu"]
 layout_mode = 2
 text = "Subscribe"
 
-[node name="HypeEnd" type="Button" parent="Panel/Margin/VBox/HBox"]
+[node name="HypeEnd" type="Button" parent="Panel/Margin/VBox/debug/DebugMenu"]
 layout_mode = 2
 text = "Hype End"
 
+[node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Logs" type="RichTextLabel" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+scroll_following = true
+
 [connection signal="pressed" from="Panel/Margin/VBox/HBoxInput/Validate" to="." method="_on_validate_pressed"]
-[connection signal="value_changed" from="Panel/Margin/VBox/HSlider" to="." method="_on_h_slider_value_changed"]
-[connection signal="pressed" from="Panel/Margin/VBox/HBox/HypeStart" to="." method="_on_hype_start_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/HBox/Sub" to="." method="_on_sub_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/HBox/HypeEnd" to="." method="_on_hype_end_pressed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/HBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="Panel/Margin/VBox/OpenOverlay" to="." method="_on_open_overlay_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/HypeStart" to="." method="_on_hype_start_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/Sub" to="." method="_on_sub_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/HypeEnd" to="." method="_on_hype_end_pressed"]

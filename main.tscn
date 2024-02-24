@@ -1,48 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://convt8kbjvkln"]
+[gd_scene load_steps=4 format=3 uid="uid://convt8kbjvkln"]
 
-[ext_resource type="Texture2D" uid="uid://bymkmmpax3c4h" path="res://assets/textures/train_tracks.png" id="1_dtkny"]
 [ext_resource type="Script" path="res://main.gd" id="1_ir61v"]
 [ext_resource type="Script" path="res://addons/nodewebsockets/websocket_client.gd" id="2_xa2on"]
 [ext_resource type="PackedScene" uid="uid://chei1p1yfb286" path="res://scenes/ui.tscn" id="3_1i137"]
-[ext_resource type="PackedScene" uid="uid://ou0qqh6hxrbx" path="res://scenes/wagon.tscn" id="4_1f073"]
-
-[sub_resource type="Curve2D" id="Curve2D_a86u4"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 23, 655, 0, 0, 0, 0, 1162, 656, 0, 0, 0, 0, 1163, 16, 0, 0, 0, 0, 19, 16, 0, 0, 0, 0, 20, 655)
-}
-point_count = 5
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_ir61v")
-wagon_scene = ExtResource("4_1f073")
-username = "irong78"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="UI" parent="CanvasLayer" instance=ExtResource("3_1i137")]
-visible = false
 
 [node name="DebugWebSocketClient" type="Node" parent="."]
 script = ExtResource("2_xa2on")
 
-[node name="Track" type="Line2D" parent="."]
-visible = false
-texture_repeat = 3
-position = Vector2(4, -1)
-points = PackedVector2Array(0, 5, 570.656, 5, 1144, 5, 1144, 324.397, 1144, 645, 571.492, 644.5, 0, 644)
-closed = true
-width = 20.0
-texture = ExtResource("1_dtkny")
-texture_mode = 1
-joint_mode = 2
-
-[node name="TrainPath" type="Path2D" parent="."]
-position = Vector2(-15, -12)
-curve = SubResource("Curve2D_a86u4")
-
-[node name="train1" parent="TrainPath" instance=ExtResource("4_1f073")]
-position = Vector2(72.9805, 667.044)
-progress = 50.0
-v_offset = 12.0
-
+[connection signal="open_overlay" from="CanvasLayer/UI" to="." method="_on_ui_open_overlay"]
+[connection signal="update_username" from="CanvasLayer/UI" to="." method="_on_ui_update_username"]
 [connection signal="data_received" from="DebugWebSocketClient" to="." method="_on_web_socket_client_data_received"]

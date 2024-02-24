@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfx1fj2hrdvip"]
+
+[ext_resource type="PackedScene" uid="uid://blkeokca0ctys" path="res://scenes/overlay.tscn" id="1_w75sy"]
+
+[node name="OverlayWindow" type="Window"]
+disable_3d = true
+own_world_3d = true
+transparent_bg = true
+mode = 3
+title = "Overlay"
+position = Vector2i(50, 50)
+size = Vector2i(1920, 1080)
+wrap_controls = true
+borderless = true
+transparent = true
+content_scale_size = Vector2i(1920, 1080)
+content_scale_mode = 1
+content_scale_aspect = 1
+
+[node name="overlay" parent="." instance=ExtResource("1_w75sy")]
