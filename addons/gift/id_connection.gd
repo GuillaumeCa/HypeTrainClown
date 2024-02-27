@@ -5,6 +5,7 @@ extends RefCounted
 signal polled
 signal token_invalid
 signal token_refreshed(success)
+signal responded(body)
 
 const ONE_HOUR_MS = 3600000
 
@@ -27,6 +28,7 @@ func poll() -> void:
 		if (id_client.get_status() == HTTPClient.STATUS_CONNECTED):
 			if (!id_client_response.is_empty()):
 				var response = JSON.parse_string(id_client_response.get_string_from_utf8())
+				responded.emit(response)
 				if (response.has("status") && (response["status"] == 401 || response["status"] == 400)):
 					print("Token is invalid. Aborting.")
 					token_invalid.emit()
@@ -48,8 +50,17 @@ func poll() -> void:
 	polled.emit()
 
 func check_token() -> void:
+	await verify_token()
+
+func verify_token():
 	id_client.request(HTTPClient.METHOD_GET, "/oauth2/validate", ["Authorization: OAuth %s" % last_token.token])
 	print("Validating token...")
+	var response = await(responded) 
+	print("Validating token...")
+	if id_client.get_response_code() != 200:
+		return null
+	
+	return response
 
 func refresh_token() -> void:
 	if (last_token is RefreshableUserAccessToken):

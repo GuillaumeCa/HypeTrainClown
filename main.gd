@@ -21,7 +21,7 @@ var username = ""
 
 var window
 
-var debug = false
+var debug = true
 
 func _ready():
 	config = Master.config
@@ -39,6 +39,54 @@ func _ready():
 
 func setup_twitch_connection():
 	ui.add_log("Connexion à twitch en cours...")
+	ui.user_connected = false
+	
+	var token : UserAccessToken
+	var login = true
+	if config["auth"]:
+		print("loading token from config")
+		token = UserAccessToken.new(config["auth"], client_id)
+		login = false
+	else:
+		print("fetching new token")
+		token = await get_token()
+		if token == null:
+			# Authentication failed. Abort.
+			ui.add_log("L'authentification a échoué.")
+			reset_token()
+			return
+
+	# Store the token in the ID connection, create all other connections.
+	id = TwitchIDConnection.new(token)
+	
+	# For everything to work, the id connection has to be polled regularly.
+	get_tree().process_frame.disconnect(id.poll)
+	get_tree().process_frame.connect(id.poll)
+	
+	if !login:
+		var token_verif = await id.verify_token()
+		if !token_verif:
+			ui.add_log("L'authentification a échoué.")
+			reset_token()
+			return
+		print("token verified")
+	
+	api = TwitchAPIConnection.new(id)
+	
+	if eventsub:
+		eventsub.event.disconnect(Master.send_event)
+	
+	eventsub = TwitchEventSubConnection.new(api)
+	
+	
+	eventsub.event.connect(Master.send_event)
+	connect_to_twitch_events()
+
+func reset_token():
+	config["auth"] = null
+	Master.save_config(config)
+
+func get_token():
 	# We will login using the Implicit Grant Flow, which only requires a client_id.
 	# Alternatively, you can use the Authorization Code Grant Flow or the Client Credentials Grant Flow.
 	# Note that the Client Credentials Grant Flow will only return an AppAccessToken, which can not be used
@@ -49,29 +97,24 @@ func setup_twitch_connection():
 
 	# Next, we actually get our token to authenticate. 
 	# See https://dev.twitch.tv/docs/authentication/scopes/#twitch-access-token-scopes
-	var token : UserAccessToken = await(auth.login(client_id, [
+	var token = await(auth.login(client_id, [
 		"channel:read:hype_train",
 		#"channel:read:subscriptions",
 		"user:read:chat"
 	]))
 	
-	if (token == null):
-		# Authentication failed. Abort.
-		ui.add_log("L'authentification a échoué.")
-		return
+	config["auth"] = {
+		"scope": token.scopes,
+		"access_token": token.token,
+	}
+	Master.save_config(config)
+	return token
 
-	# Store the token in the ID connection, create all other connections.
-	id = TwitchIDConnection.new(token)
-	api = TwitchAPIConnection.new(id)
-	eventsub = TwitchEventSubConnection.new(api)
-	# For everything to work, the id connection has to be polled regularly.
-	get_tree().process_frame.connect(id.poll)
-	
+func connect_to_twitch_events():
 	ui.add_log("Connexion aux évenements twitch...")
 	await(eventsub.connect_to_eventsub())
-	eventsub.event.connect(Master.send_event)
-	ui.add_log("Connexion réussi !")
 	
+	ui.add_log("Connexion réussi !")
 	var user_ids : Dictionary = await(api.get_users_by_name([username]))
 	if (user_ids.has("data") && user_ids["data"].size() > 0):
 		var user_id : String = user_ids["data"][0]["id"]
@@ -83,6 +126,7 @@ func setup_twitch_connection():
 		subscribe_event(Master.HYPE_TRAIN_END_EVENT, user_id)
 		subscribe_event(Master.CHAT_NOTIFICATION_EVENT, user_id, user_id)
 		
+		ui.user_connected = true
 		#subscribe_event(Master.SUBSCRIBE_EVENT, user_id)
 		#subscribe_event(Master.RESUBSCRIBE_EVENT, user_id)
 	else:
@@ -140,12 +184,17 @@ func _on_ui_open_overlay():
 	add_child(window)
 	
 	
-func on_close(window):
+func on_close(overlay_window):
 	ui.toggle_open_overlay(true)
-	window.queue_free()
+	overlay_window.queue_free()
 
 
-func _on_ui_update_username():
+func _on_ui_connect_user(connect_user):
 	username = config["username"]
-	if not OS.is_debug_build() and username:
-		setup_twitch_connection()
+	print("connect", connect_user)
+	if connect_user:
+		if (debug or not OS.is_debug_build()) and username:
+			setup_twitch_connection()
+	else:
+		eventsub.event.disconnect(Master.send_event)
+		reset_token()

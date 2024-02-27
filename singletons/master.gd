@@ -10,6 +10,14 @@ const CHAT_NOTIFICATION_EVENT = "channel.chat.notification"
 var config_filename = "user://config.cfg"
 var config
 
+var config_version = "1.0"
+
+const default_config = {
+	"username": "",
+	"train_scale": 1.0,
+	"auth": null
+}
+
 signal events(type, data)
 
 func _ready():
@@ -21,21 +29,27 @@ func init_config():
 		config = load_config()
 		print(config)
 	else:
-		var cfg = {
-			"username": "",
-			"train_scale": 1.0
-		}
+		var cfg = default_config.duplicate()
+		cfg["v"] = config_version
 		save_config(cfg)
 		config = cfg
 
 func save_config(cfg: Dictionary):
 	var f = FileAccess.open(config_filename, FileAccess.WRITE)
 	f.store_string(JSON.stringify(cfg))
+	return cfg
 
 func load_config() -> Dictionary:
 	var f = FileAccess.open(config_filename, FileAccess.READ)
 	var txt = f.get_as_text()
-	return JSON.parse_string(txt)
+	var data = JSON.parse_string(txt)
+	
+	if !("v" in data) or data["v"] != config_version:
+		var cfg = default_config.duplicate()
+		cfg["v"] = config_version
+		return save_config(cfg)
+	
+	return data
 
 
 func send_event(type: String, data: Dictionary):

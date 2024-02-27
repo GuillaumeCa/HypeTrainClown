@@ -14,6 +14,6 @@ script = ExtResource("1_ir61v")
 [node name="DebugWebSocketClient" type="Node" parent="."]
 script = ExtResource("2_xa2on")
 
+[connection signal="connect_user" from="CanvasLayer/UI" to="." method="_on_ui_connect_user"]
 [connection signal="open_overlay" from="CanvasLayer/UI" to="." method="_on_ui_open_overlay"]
-[connection signal="update_username" from="CanvasLayer/UI" to="." method="_on_ui_update_username"]
 [connection signal="data_received" from="DebugWebSocketClient" to="." method="_on_web_socket_client_data_received"]

@@ -5,21 +5,29 @@ extends Control
 
 
 signal open_overlay
-signal update_username
+signal connect_user(connect)
 
 
 var demo_users = ["Ddurieux", "StazHopper", "Balokuclem", "Dguillaume"]
 
 
+var user_connected = false
+
 func _ready():
 	$Panel/Margin/VBox/HBoxInput/UsernameInput.text = config["username"]
 	$Panel/Margin/VBox/HBoxContainer/HSlider.value = config["train_scale"]
 	update_scale_label(config["train_scale"])
+	
 
 	if not OS.is_debug_build():
 		$Panel/Margin/VBox/debug.hide()
 		
 	Master.events.connect(handle_events)
+
+
+func _process(delta):
+	$Panel/Margin/VBox/HBoxInput/UsernameInput.editable = !user_connected
+	$Panel/Margin/VBox/HBoxInput/Validate.text = "Deconnexion" if user_connected else "OK"
 
 func _on_sub_pressed():
 	call_deferred("call_twitch", "channel.subscribe")
@@ -40,15 +48,15 @@ func _on_h_slider_value_changed(value):
 	Master.save_config(config)
 
 
-func update_scale_label(scale):
-	$Panel/Margin/VBox/HBoxContainer/ScaleLabel.text = str(scale) + "x"
+func update_scale_label(new_scale):
+	$Panel/Margin/VBox/HBoxContainer/ScaleLabel.text = str(new_scale) + "x"
 
 func _on_validate_pressed():
 	var username = $Panel/Margin/VBox/HBoxInput/UsernameInput.text
-	var config = Master.config
 	config["username"] = username
 	Master.save_config(config)
-	update_username.emit()
+	user_connected = !user_connected
+	connect_user.emit(user_connected)
 
 
 func _on_open_overlay_pressed():
