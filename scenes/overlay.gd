@@ -33,29 +33,50 @@ func handle_events(type: String, data: Dictionary):
 	match type:
 		Master.HYPE_TRAIN_BEGIN_EVENT:
 			hype_mode = true
+		Master.HYPE_TRAIN_PROGRESS_EVENT:
+			hype_mode = true
 		Master.HYPE_TRAIN_END_EVENT:
 			hype_mode = false
 			var t = get_tree().create_timer(1)
 			await t.timeout
 			reset_train()
-		Master.SUBSCRIBE_EVENT: handle_sub(data)
-		Master.RESUBSCRIBE_EVENT: handle_sub(data)
-	
-func handle_sub(event):
-	var user = event["user_name"]
-	var login = event["user_login"]
+		#Master.SUBSCRIBE_EVENT, Master.RESUBSCRIBE_EVENT: handle_sub(data)
+		Master.CHAT_NOTIFICATION_EVENT:
+			handle_chat_notif(data)
+
+
+func handle_chat_notif(data):
+	var notice_type = data["notice_type"]
+	match(notice_type):
+		"sub": add_user(data["chatter_user_name"], data["chatter_user_login"])
+		"subgift":
+			add_user(data["chatter_user_name"], data["chatter_user_login"])
+			add_user(data["recipient_user_name"], data["recipient_user_login"])
+		"resub":
+			if data[notice_type]["is_gift"] and !data[notice_type]["gifter_is_anonymous"]:
+				add_user(data[notice_type]["gifter_user_name"], data[notice_type]["gifter_user_login"])
+			add_user(data["chatter_user_name"], data["chatter_user_login"])
+		"community_sub_gift", "prime_paid_upgrade":
+			add_user(data["chatter_user_name"], data["chatter_user_login"])
+		"gift_paid_upgrade", "pay_it_forward":
+			if !data[notice_type]["gifter_is_anonymous"]:
+				add_user(data[notice_type]["gifter_user_name"], data[notice_type]["gifter_user_login"])
+			add_user(data["chatter_user_name"], data["chatter_user_login"])
+
+
+func add_user(username, login):
 	
 	# if user is already on the train don't add it again
 	if login in subs:
 		return
 	subs[login] = 1
-	prints("user", user, "just subbed !")
+	prints("user", username, "just subbed !")
 	
 	var wagon_idx = 0
 	while wagon_idx < wagons.size():
 		var wagon: Wagon = wagons[wagon_idx]
 		if not wagon.is_full():
-			wagon.add_clown(user)
+			wagon.add_clown(username)
 			return
 		wagon_idx += 1
 	
@@ -63,7 +84,7 @@ func handle_sub(event):
 	new_wagon.progress = wagons[wagon_idx-1].progress - (train_offset * train_scale)
 	new_wagon.v_offset = train_init_voffset * train_scale
 	train_path.add_child(new_wagon)
-	new_wagon.add_clown(user)
+	new_wagon.add_clown(username)
 	wagons = train_path.get_children()
 
 func reset_train():

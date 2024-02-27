@@ -1,9 +1,11 @@
 extends Node
 
 const HYPE_TRAIN_BEGIN_EVENT = "channel.hype_train.begin"
+const HYPE_TRAIN_PROGRESS_EVENT = "channel.hype_train.progress"
 const HYPE_TRAIN_END_EVENT = "channel.hype_train.end"
 const SUBSCRIBE_EVENT = "channel.subscribe"
 const RESUBSCRIBE_EVENT = "channel.subscription.message"
+const CHAT_NOTIFICATION_EVENT = "channel.chat.notification"
 
 var config_filename = "user://config.cfg"
 var config

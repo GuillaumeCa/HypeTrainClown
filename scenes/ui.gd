@@ -64,22 +64,23 @@ func handle_events(type: String, data: Dictionary):
 	match type:
 		Master.HYPE_TRAIN_BEGIN_EVENT:
 			add_log("Le train de la hype a démarré")
+		Master.HYPE_TRAIN_PROGRESS_EVENT:
+			add_log("Le train de la hype a progressé. niveau=" + str(data["level"]) + " progress=" + str(data["progress"]))
 		Master.HYPE_TRAIN_END_EVENT:
 			add_log("Le train de la hype est terminé")
-		Master.SUBSCRIBE_EVENT:
-			add_log("Nouveau sub: " + data["user_name"])
-		Master.RESUBSCRIBE_EVENT:
-			add_log("Nouveau sub: " + data["user_name"])
-			
+		Master.CHAT_NOTIFICATION_EVENT:
+			add_log("Nouvelle notification du chat: " + data["notice_type"])
+			prints("chat notification:", type, data)
+		#Master.SUBSCRIBE_EVENT, Master.RESUBSCRIBE_EVENT:
+			#add_log("Nouveau sub: " + data["user_name"])
 
 
 func _on_demo_start_pressed():
 	Master.send_event(Master.HYPE_TRAIN_BEGIN_EVENT, {})
 
-
 func _on_demo_sub_pressed():
 	var user = demo_users[randi() % demo_users.size()] + str(randi_range(0, 100))
-	Master.send_event(Master.SUBSCRIBE_EVENT, { "user_name": user, "user_login": user })
+	Master.send_event(Master.CHAT_NOTIFICATION_EVENT, { "notice_type": "sub", "chatter_user_name": user, "chatter_user_login": user })
 
 
 func _on_demo_end_pressed():

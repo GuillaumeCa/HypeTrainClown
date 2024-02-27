@@ -14,12 +14,14 @@ var overlay_window_scene = preload("res://scenes/overlay_window.tscn")
 
 # to start the debug server with twitch cli: twitch event websocket start-server
 #const url = "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30"
-const url = "ws://127.0.0.1:8080/ws"
+const DEBUG_WS_URL = "ws://127.0.0.1:8080/ws"
 
 var config
 var username = ""
 
 var window
+
+var debug = false
 
 func _ready():
 	config = Master.config
@@ -28,11 +30,11 @@ func _ready():
 	# size of the config window
 	#get_window().size = Vector2i(900, 400)
 
-	if not OS.is_debug_build():
+	if debug or !OS.is_debug_build():
 		if username:
 			setup_twitch_connection()
 	else:
-		$DebugWebSocketClient.connect_to_url(url)
+		$DebugWebSocketClient.connect_to_url(DEBUG_WS_URL)
 	
 
 func setup_twitch_connection():
@@ -49,7 +51,8 @@ func setup_twitch_connection():
 	# See https://dev.twitch.tv/docs/authentication/scopes/#twitch-access-token-scopes
 	var token : UserAccessToken = await(auth.login(client_id, [
 		"channel:read:hype_train",
-		"channel:read:subscriptions",
+		#"channel:read:subscriptions",
+		"user:read:chat"
 	]))
 	
 	if (token == null):
@@ -76,14 +79,22 @@ func setup_twitch_connection():
 		ui.add_log("Utilisateur '%s' trouvé avec l'id: %s" % [username, user_id])
 		
 		subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, user_id)
+		subscribe_event(Master.HYPE_TRAIN_PROGRESS_EVENT, user_id)
 		subscribe_event(Master.HYPE_TRAIN_END_EVENT, user_id)
-		subscribe_event(Master.SUBSCRIBE_EVENT, user_id)
-		subscribe_event(Master.RESUBSCRIBE_EVENT, user_id)
+		subscribe_event(Master.CHAT_NOTIFICATION_EVENT, user_id, user_id)
+		
+		#subscribe_event(Master.SUBSCRIBE_EVENT, user_id)
+		#subscribe_event(Master.RESUBSCRIBE_EVENT, user_id)
 	else:
 		ui.add_log("Utilisateur non trouvé")
 
-func subscribe_event(type, user_id):
-	var sub = await eventsub.subscribe_event(type, "1", {"broadcaster_user_id": user_id})
+func subscribe_event(type, broadcaster_user_id, user_id = null):
+	var condition = {"broadcaster_user_id": broadcaster_user_id}
+	if user_id:
+		condition["user_id"] = str(user_id)
+		
+	print(condition)
+	var sub = await eventsub.subscribe_event(type, "1", condition)
 	if sub == -1:
 		ui.add_log("Impossible de se connecter à l'évenement: " + type)
 	else:

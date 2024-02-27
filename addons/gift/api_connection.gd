@@ -56,16 +56,12 @@ func create_eventsub_subscription(subscription_data : Dictionary) -> Dictionary:
 	match (client.get_response_code()):
 		400:
 			print("Bad Request! Check the data you specified.")
-			return {}
 		403:
 			print("Forbidden! The access token is missing the required scopes.")
-			return {}
 		409:
 			print("Conflict! A subscription already exists for the specified event type and condition combination.")
-			return {}
 		429:
 			print("Too Many Requests! The request exceeds the number of subscriptions that you may create with the same combination of type and condition values.")
-			return {}
 	return response
 
 func get_users_by_id(ids : Array[String]) -> Dictionary:
