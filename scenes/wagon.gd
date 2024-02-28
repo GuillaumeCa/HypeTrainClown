@@ -13,9 +13,11 @@ var clowns_count = 0
 func is_full():
 	return clowns_count == max_clown
 
-func add_clown(clown_name: String):
+func add_clown(clown_name: String, color: String = ""):
 	var clown = clown_scene.instantiate() as Clown
 	clown.pseudo = clown_name
+	if color != "":
+		clown.color = color
 	clown.position = Vector2(clowns_count * -offset, 0)
 	start.add_child(clown)
 	clowns_count += 1

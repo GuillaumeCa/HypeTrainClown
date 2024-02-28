@@ -88,7 +88,7 @@ func _on_demo_start_pressed():
 
 func _on_demo_sub_pressed():
 	var user = demo_users[randi() % demo_users.size()] + str(randi_range(0, 100))
-	Master.send_event(Master.CHAT_NOTIFICATION_EVENT, { "notice_type": "sub", "chatter_user_name": user, "chatter_user_login": user })
+	Master.send_event(Master.CHAT_NOTIFICATION_EVENT, { "notice_type": "sub", "chatter_user_name": user, "chatter_user_login": user, "color": "" })
 
 
 func _on_demo_end_pressed():

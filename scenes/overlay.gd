@@ -48,23 +48,23 @@ func handle_events(type: String, data: Dictionary):
 func handle_chat_notif(data):
 	var notice_type = data["notice_type"]
 	match(notice_type):
-		"sub": add_user(data["chatter_user_name"], data["chatter_user_login"])
+		"sub": add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
 		"subgift":
-			add_user(data["chatter_user_name"], data["chatter_user_login"])
+			add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
 			add_user(data["recipient_user_name"], data["recipient_user_login"])
 		"resub":
 			if data[notice_type]["is_gift"] and !data[notice_type]["gifter_is_anonymous"]:
 				add_user(data[notice_type]["gifter_user_name"], data[notice_type]["gifter_user_login"])
-			add_user(data["chatter_user_name"], data["chatter_user_login"])
+			add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
 		"community_sub_gift", "prime_paid_upgrade":
-			add_user(data["chatter_user_name"], data["chatter_user_login"])
+			add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
 		"gift_paid_upgrade", "pay_it_forward":
 			if !data[notice_type]["gifter_is_anonymous"]:
 				add_user(data[notice_type]["gifter_user_name"], data[notice_type]["gifter_user_login"])
-			add_user(data["chatter_user_name"], data["chatter_user_login"])
+			add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
 
 
-func add_user(username, login):
+func add_user(username, login, color = ""):
 	
 	# if user is already on the train don't add it again
 	if login in subs:
@@ -76,7 +76,7 @@ func add_user(username, login):
 	while wagon_idx < wagons.size():
 		var wagon: Wagon = wagons[wagon_idx]
 		if not wagon.is_full():
-			wagon.add_clown(username)
+			wagon.add_clown(username, color)
 			return
 		wagon_idx += 1
 	
@@ -84,7 +84,7 @@ func add_user(username, login):
 	new_wagon.progress = wagons[wagon_idx-1].progress - (train_offset * train_scale)
 	new_wagon.v_offset = train_init_voffset * train_scale
 	train_path.add_child(new_wagon)
-	new_wagon.add_clown(username)
+	new_wagon.add_clown(username, color)
 	wagons = train_path.get_children()
 
 func reset_train():

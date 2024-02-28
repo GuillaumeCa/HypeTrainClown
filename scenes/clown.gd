@@ -3,9 +3,12 @@ extends Sprite2D
 class_name Clown
 
 var pseudo = ""
+var color = "#f50000"
 
 func _ready():
 	$Label.text = pseudo
+	$Label.set("theme_override_colors/font_color", Color(color))
+	$ClownHair.modulate = Color(color)
 	animate()
 
 

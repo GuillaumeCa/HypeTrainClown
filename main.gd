@@ -180,6 +180,7 @@ func _on_ui_open_overlay():
 	
 	ui.toggle_open_overlay(false)
 	add_child(window)
+	get_window().grab_focus()
 	
 	
 func on_close(overlay_window):
