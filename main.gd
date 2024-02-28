@@ -121,14 +121,12 @@ func connect_to_twitch_events():
 		print("Found user '%s' with id: %s" % [username, user_id])
 		ui.add_log("Utilisateur '%s' trouvé avec l'id: %s" % [username, user_id])
 		
-		subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, user_id)
-		subscribe_event(Master.HYPE_TRAIN_PROGRESS_EVENT, user_id)
-		subscribe_event(Master.HYPE_TRAIN_END_EVENT, user_id)
-		subscribe_event(Master.CHAT_NOTIFICATION_EVENT, user_id, user_id)
+		await subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, user_id)
+		await subscribe_event(Master.HYPE_TRAIN_PROGRESS_EVENT, user_id)
+		await subscribe_event(Master.HYPE_TRAIN_END_EVENT, user_id)
+		await subscribe_event(Master.CHAT_NOTIFICATION_EVENT, user_id, user_id)
 		
 		ui.user_connected = true
-		#subscribe_event(Master.SUBSCRIBE_EVENT, user_id)
-		#subscribe_event(Master.RESUBSCRIBE_EVENT, user_id)
 	else:
 		ui.add_log("Utilisateur non trouvé")
 
@@ -137,13 +135,13 @@ func subscribe_event(type, broadcaster_user_id, user_id = null):
 	if user_id:
 		condition["user_id"] = str(user_id)
 		
-	print(condition)
 	var sub = await eventsub.subscribe_event(type, "1", condition)
 	if sub == -1:
 		ui.add_log("Impossible de se connecter à l'évenement: " + type)
 	else:
 		ui.add_log("Connexion à l'évenement " + type + " réussie")
-
+	
+	return sub
 
 func on_session_received():
 	print("session received")
