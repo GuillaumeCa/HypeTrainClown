@@ -15,8 +15,7 @@ var user_connected = false
 
 func _ready():
 	$Panel/Margin/VBox/HBoxInput/UsernameInput.text = config["username"]
-	$Panel/Margin/VBox/HBoxContainer/HSlider.value = config["train_scale"]
-	update_scale_label(config["train_scale"])
+	update_scale(config["train_scale"])
 	
 
 	if not OS.is_debug_build():
@@ -44,12 +43,13 @@ func call_twitch(event):
 
 func _on_h_slider_value_changed(value):
 	config["train_scale"] = value
-	update_scale_label(value)
+	update_scale(value)
 	Master.save_config(config)
 
 
-func update_scale_label(new_scale):
+func update_scale(new_scale):
 	$Panel/Margin/VBox/HBoxContainer/ScaleLabel.text = str(new_scale) + "x"
+	$Panel/Margin/VBox/HBoxContainer/ScaleSlider.value = new_scale
 
 func _on_validate_pressed():
 	var username = $Panel/Margin/VBox/HBoxInput/UsernameInput.text

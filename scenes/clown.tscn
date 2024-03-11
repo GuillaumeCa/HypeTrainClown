@@ -6,14 +6,13 @@
 
 [node name="Clown" type="Sprite2D"]
 position = Vector2(-6.10352e-05, 0)
-scale = Vector2(0.029, 0.029)
+scale = Vector2(0.058, 0.058)
 texture = ExtResource("1_0hfa8")
 script = ExtResource("2_v7ar1")
 
 [node name="ClownHair" type="Sprite2D" parent="."]
 z_index = -1
 position = Vector2(0.00219727, 0)
-scale = Vector2(1, 1)
 texture = ExtResource("3_j2gvd")
 
 [node name="Label" type="Label" parent="."]

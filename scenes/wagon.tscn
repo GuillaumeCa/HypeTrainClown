@@ -12,14 +12,16 @@ point_count = 2
 curve = SubResource("Curve_0bnt6")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u0tcy"]
+lifetime_randomness = 0.15
 particle_flag_disable_z = true
 angle_min = -46.0
 angle_max = 70.9
 direction = Vector3(-1, -0.08, 0)
 spread = 8.478
-initial_velocity_min = 14.49
-initial_velocity_max = 14.49
+initial_velocity_min = 28.98
+initial_velocity_max = 28.98
 gravity = Vector3(0, 0, 0)
+scale_max = 4.65
 scale_curve = SubResource("CurveTexture_3l42g")
 
 [node name="Wagon" type="PathFollow2D"]
@@ -28,18 +30,17 @@ script = ExtResource("1_ug03l")
 clown_scene = ExtResource("2_quynx")
 
 [node name="Start" type="Marker2D" parent="."]
-position = Vector2(24, -2)
+position = Vector2(47.994, -10)
 metadata/_edit_group_ = true
 
 [node name="TramMicrotech" type="Sprite2D" parent="."]
-position = Vector2(0, -3.435)
+position = Vector2(-0.00877788, -13.435)
 rotation = -0.00262696
-scale = Vector2(0.15, 0.15)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_dxw47")
-metadata/_edit_lock_ = true
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-position = Vector2(-35.9973, 3.03161)
+position = Vector2(-72, 0.064)
 amount = 80
 process_material = SubResource("ParticleProcessMaterial_u0tcy")
-lifetime = 2.0
+lifetime = 4.0

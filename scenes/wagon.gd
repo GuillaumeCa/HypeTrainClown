@@ -2,7 +2,7 @@ extends PathFollow2D
 
 class_name Wagon
 
-var offset = 8
+var offset = 16
 var max_clown = 7
 @export var clown_scene: PackedScene
 
