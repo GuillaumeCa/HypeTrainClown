@@ -49,9 +49,9 @@ func handle_chat_notif(data):
 	var notice_type = data["notice_type"]
 	match(notice_type):
 		"sub": add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
-		"subgift":
+		"sub_gift":
 			add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
-			add_user(data["recipient_user_name"], data["recipient_user_login"])
+			add_user(data[notice_type]["recipient_user_name"], data[notice_type]["recipient_user_login"])
 		"resub":
 			if data[notice_type]["is_gift"] and !data[notice_type]["gifter_is_anonymous"]:
 				add_user(data[notice_type]["gifter_user_name"], data[notice_type]["gifter_user_login"])

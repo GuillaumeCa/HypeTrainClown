@@ -124,7 +124,7 @@ func connect_to_twitch_events():
 		await subscribe_event(Master.HYPE_TRAIN_BEGIN_EVENT, user_id)
 		await subscribe_event(Master.HYPE_TRAIN_PROGRESS_EVENT, user_id)
 		await subscribe_event(Master.HYPE_TRAIN_END_EVENT, user_id)
-		await subscribe_event(Master.CHAT_NOTIFICATION_EVENT, user_id, user_id)
+		await subscribe_event(Master.CHAT_NOTIFICATION_EVENT, user_id, 48750709)
 		
 		ui.user_connected = true
 	else:
