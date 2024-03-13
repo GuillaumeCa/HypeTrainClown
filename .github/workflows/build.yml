@@ -1,0 +1,68 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.2.1
+  EXPORT_NAME: hypetrainclown
+  PROJECT_PATH: hypetrainclown
+
+jobs:
+  export-windows:
+    name: Windows Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:4.2.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: false
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Windows Build
+        run: |
+          mkdir -v -p build/windows
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
+          cd ../build/windows
+          zip $EXPORT_NAME.zip $EXPORT_NAME.exe
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: windows
+          path: build/windows
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }} Alpha
+          body: |
+            Télécharger la version windows ici: [$EXPORT_NAME.zip](https://github.com/GuillaumeCa/HypeTrainClown/releases/download/${{ github.ref_name }}/$EXPORT_NAME.zip)
+            
+            # Améliorations
+            - 
+          draft: true
+          prerelease: true
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/windows/$EXPORT_NAME.zip
+          asset_name: $EXPORT_NAME.zip
+          asset_content_type: application/zip
+
+          
