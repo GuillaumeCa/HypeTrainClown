@@ -36,6 +36,8 @@ jobs:
         run: |
           mkdir -v -p build/windows
           godot --headless --verbose --export-release "Windows Desktop" build/windows/${EXPORT_NAME}.exe
+          godot -s addons/godot_icon/CreateIcon.gd custom.ico assets/textures/clown1.png
+          godot -s addons/godot_icon/ReplaceIcon.gd custom.ico build/windows/${EXPORT_NAME}.exe
           cd build/windows
           zip ${EXPORT_NAME}.zip ${EXPORT_NAME}.exe
           
