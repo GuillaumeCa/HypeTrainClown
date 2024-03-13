@@ -11,7 +11,6 @@ on:
 env:
   GODOT_VERSION: 4.2.1
   EXPORT_NAME: hypetrainclown
-  PROJECT_PATH: hypetrainclown
 
 jobs:
   export-windows:
@@ -20,11 +19,6 @@ jobs:
     container:
       image: barichello/godot-ci:4.2.1
     steps:
-      - name: Cache Docker images.
-        uses: ScribeMD/docker-cache@0.4.0
-        with:
-          key: docker-${{ runner.os }}-$GODOT_VERSION
-          
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -38,9 +32,9 @@ jobs:
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
-          godot --headless --verbose --export-release "Windows Desktop" build/windows/$EXPORT_NAME.exe
+          godot --headless --verbose --export-release "Windows Desktop" build/windows/${EXPORT_NAME}.exe
           cd build/windows
-          zip $EXPORT_NAME.zip $EXPORT_NAME.exe
+          zip ${EXPORT_NAME}.zip ${EXPORT_NAME}.exe
           
       - name: Create Release
         id: create_release
@@ -49,12 +43,12 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }} Alpha
           body: |
-            Télécharger la version windows ici: [$EXPORT_NAME.zip](https://github.com/GuillaumeCa/HypeTrainClown/releases/download/${{ github.ref_name }}/$EXPORT_NAME.zip)
+            Télécharger la version windows ici: [${GODOT_VERSION}.zip](https://github.com/GuillaumeCa/HypeTrainClown/releases/download/${{ github.ref_name }}/${EXPORT_NAME}.zip)
             
             # Améliorations
             - 
           draft: true
           prerelease: true
-          files: build/windows/$EXPORT_NAME.zip
+          files: build/windows/${EXPORT_NAME}.zip
 
           
