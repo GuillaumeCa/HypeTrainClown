@@ -31,13 +31,29 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          
+
+      - name: Creating Config file
+        run: |
+          touch ~/.config/godot/editor_settings-4.tres
+          echo "[gd_resource type=\"EditorSettings\" format=3]\n" >> ~/.config/godot/editor_settings-4.tres
+
+      - name: Install rcedit
+        run: |
+          wget -O rcedit.exe https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
+          echo "export/windows/rcedit = \"$(pwd)/rcedit.exe\"\n" >> ~/.config/godot/editor_settings-4.tres
+
+      - name: Install wine
+        id: wine_install
+        run: |
+          sudo apt install wine64
+          echo "export/windows/wine = \"$(which wine64)\"\n" >> ~/.config/godot/editor_settings-4.tres
+
+
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
+          ${{ steps.wine_install.outputs.WINE_PATH }}
           godot --headless --verbose --export-release "Windows Desktop" build/windows/${EXPORT_NAME}.exe
-          godot --headless --verbose -s addons/godot_icon/CreateIcon.gd custom.ico assets/textures/clown1.png
-          godot --headless --verbose -s addons/godot_icon/ReplaceIcon.gd custom.ico build/windows/${EXPORT_NAME}.exe
           cd build/windows
           zip ${EXPORT_NAME}.zip ${EXPORT_NAME}.exe
           
