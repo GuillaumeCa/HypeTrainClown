@@ -31,15 +31,9 @@ jobs:
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
-          cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
-          cd ../build/windows
+          godot --headless --verbose --export-release "Windows Desktop" build/windows/$EXPORT_NAME.exe
+          cd build/windows
           zip $EXPORT_NAME.zip $EXPORT_NAME.exe
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: windows
-          path: build/windows
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
