@@ -20,28 +20,34 @@ jobs:
     container:
       image: barichello/godot-ci:4.2.1
     steps:
+      - name: Cache Docker images.
+        uses: ScribeMD/docker-cache@0.4.0
+        with:
+          key: docker-${{ runner.os }}-$GODOT_VERSION
+          
       - name: Checkout
         uses: actions/checkout@v2
         with:
           lfs: false
+          
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
           godot --headless --verbose --export-release "Windows Desktop" build/windows/$EXPORT_NAME.exe
           cd build/windows
           zip $EXPORT_NAME.zip $EXPORT_NAME.exe
+          
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }} Alpha
+          name: ${{ github.ref_name }} Alpha
           body: |
             Télécharger la version windows ici: [$EXPORT_NAME.zip](https://github.com/GuillaumeCa/HypeTrainClown/releases/download/${{ github.ref_name }}/$EXPORT_NAME.zip)
             
@@ -49,14 +55,6 @@ jobs:
             - 
           draft: true
           prerelease: true
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/windows/$EXPORT_NAME.zip
-          asset_name: $EXPORT_NAME.zip
-          asset_content_type: application/zip
+          files: build/windows/$EXPORT_NAME.zip
 
           
