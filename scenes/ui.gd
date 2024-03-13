@@ -11,6 +11,7 @@ signal connect_user(connect)
 var demo_users = ["Ddurieux", "StazHopper", "Balokuclem", "Dguillaume"]
 
 
+var is_loading = false
 var user_connected = false
 
 func _ready():
@@ -25,8 +26,8 @@ func _ready():
 
 
 func _process(delta):
-	$Panel/Margin/VBox/HBoxInput/UsernameInput.editable = !user_connected
-	$Panel/Margin/VBox/HBoxInput/Validate.text = "Deconnexion" if user_connected else "OK"
+	$Panel/Margin/VBox/HBoxInput/UsernameInput.editable = !is_loading and !user_connected
+	$Panel/Margin/VBox/HBoxInput/Validate.text = "Deconnexion" if user_connected else "Connexion"
 
 func _on_sub_pressed():
 	call_deferred("call_twitch", "channel.subscribe")
