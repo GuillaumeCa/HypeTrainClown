@@ -46,7 +46,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }} Alpha
           body: |
-            Télécharger la version windows ici: [${GODOT_VERSION}.zip](https://github.com/GuillaumeCa/HypeTrainClown/releases/download/${{ github.ref_name }}/${EXPORT_NAME}.zip)
+            Télécharger la version windows ici: [${{ env.EXPORT_NAME }}.zip](https://github.com/GuillaumeCa/HypeTrainClown/releases/download/${{ github.ref_name }}/${{ env.EXPORT_NAME }}.zip)
             
             # Améliorations
             - 
