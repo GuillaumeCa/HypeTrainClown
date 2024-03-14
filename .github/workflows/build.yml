@@ -34,6 +34,7 @@ jobs:
 
       - name: Creating Config file
         run: |
+          mkdir -v -p ~/.config/godot 
           touch ~/.config/godot/editor_settings-4.tres
           echo "[gd_resource type=\"EditorSettings\" format=3]\n" >> ~/.config/godot/editor_settings-4.tres
 
