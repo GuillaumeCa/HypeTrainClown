@@ -17,12 +17,13 @@ var user_connected = false
 func _ready():
 	$Panel/Margin/VBox/HBoxInput/UsernameInput.text = config["username"]
 	update_scale(config["train_scale"])
-	
+	$Panel/Margin/VBox/CheckButton.button_pressed = config["enable_raid"]
 
 	if not OS.is_debug_build():
 		$Panel/Margin/VBox/debug.hide()
 		
 	Master.events.connect(handle_events)
+	$Panel/Margin/VBox/demo.hide()
 
 
 func _process(delta):
@@ -65,6 +66,12 @@ func _on_open_overlay_pressed():
 	
 func toggle_open_overlay(open: bool):
 	open_overlay_btn.text = "Ouvrir overlay" if open else "Fermer overlay"
+	
+	if open:
+		$Panel/Margin/VBox/demo.hide()
+	else:
+		$Panel/Margin/VBox/demo.show()
+		
 
 func add_log(text: String):
 	$Panel/Margin/VBox/Logs.text += text + "\n"
@@ -85,12 +92,23 @@ func handle_events(type: String, data: Dictionary):
 
 
 func _on_demo_start_pressed():
-	Master.send_event(Master.HYPE_TRAIN_BEGIN_EVENT, {})
+	var user = demo_users[0]
+	Master.send_event(Master.CHAT_NOTIFICATION_EVENT, { "notice_type": "sub", "chatter_user_name": user, "chatter_user_login": user, "color": "" })
+	Master.send_event(Master.HYPE_TRAIN_BEGIN_EVENT, { "last_contribution": { "user_login": user } })
 
 func _on_demo_sub_pressed():
-	var user = demo_users[randi() % demo_users.size()] + str(randi_range(0, 100))
+	var user = demo_users.pick_random() + str(randi_range(0, 100))
 	Master.send_event(Master.CHAT_NOTIFICATION_EVENT, { "notice_type": "sub", "chatter_user_name": user, "chatter_user_login": user, "color": "" })
 
 
 func _on_demo_end_pressed():
 	Master.send_event(Master.HYPE_TRAIN_END_EVENT, {})
+
+
+func _on_demo_raid_pressed() -> void:
+	Master.send_event(Master.CHAT_NOTIFICATION_EVENT, { "notice_type": "raid", "raid": { "user_name": demo_users.pick_random(), "viewer_count": randi_range(50, 500) } })
+
+
+func _on_check_button_toggled(toggled_on: bool) -> void:
+	config["enable_raid"] = toggled_on
+	Master.save_config(config)

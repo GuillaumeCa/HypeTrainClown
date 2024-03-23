@@ -1,0 +1,106 @@
+[gd_scene load_steps=13 format=3 uid="uid://bqdyc84qknjug"]
+
+[ext_resource type="Texture2D" uid="uid://56a5q8ajy2fq" path="res://assets/textures/hellpod.png" id="1_70cw0"]
+[ext_resource type="Texture2D" uid="uid://c867utw33ufyu" path="res://assets/textures/clown1.png" id="1_euy5p"]
+[ext_resource type="Script" path="res://scenes/hell_pod.gd" id="1_uyyyk"]
+[ext_resource type="Texture2D" uid="uid://dw57fjgytpxsb" path="res://assets/textures/clown_hair.png" id="2_i26a1"]
+[ext_resource type="Texture2D" uid="uid://bxvm1vbtih410" path="res://assets/textures/clown_nohair.png" id="3_3xa2l"]
+[ext_resource type="Texture2D" uid="uid://vys85dy8ol8k" path="res://assets/textures/plasma_particle.png" id="3_41ehb"]
+
+[sub_resource type="Gradient" id="Gradient_bfngh"]
+offsets = PackedFloat32Array(0, 0.0273823, 0.11391, 0.720701, 1)
+colors = PackedColorArray(0.976471, 0.870588, 0.784314, 0.266667, 2, 2, 2, 1, 0.992188, 0.906028, 0.0586588, 1, 0.792157, 0.290196, 0.0352941, 1, 0.776471, 0.239216, 0.0313726, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1s5h0"]
+gradient = SubResource("Gradient_bfngh")
+
+[sub_resource type="Curve" id="Curve_787bu"]
+_data = [Vector2(0, 0.953807), 0.0, 0.0, 0, 0, Vector2(1, 0.745939), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_cd87k"]
+curve = SubResource("Curve_787bu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_k4tyv"]
+particle_flag_disable_z = true
+angle_min = -84.4
+angle_max = 61.9
+direction = Vector3(0, -1, 0)
+spread = 25.312
+flatness = 0.255
+initial_velocity_min = 292.45
+initial_velocity_max = 299.01
+radial_velocity_min = 29.92
+radial_velocity_max = 95.52
+gravity = Vector3(0, 0, 0)
+scale_min = 0.0
+scale_max = 0.25
+scale_curve = SubResource("CurveTexture_cd87k")
+color_ramp = SubResource("GradientTexture1D_1s5h0")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hyxep"]
+size = Vector2(46, 76)
+
+[node name="HellPod" type="Area2D"]
+script = ExtResource("1_uyyyk")
+
+[node name="ClownHair" type="Sprite2D" parent="."]
+position = Vector2(34.568, -9.43196)
+rotation = 1.57079
+scale = Vector2(0.106, 0.106)
+texture = ExtResource("2_i26a1")
+
+[node name="ClownNohair" type="Sprite2D" parent="."]
+position = Vector2(33.568, -9.43197)
+rotation = 1.57079
+scale = Vector2(0.106, 0.106)
+texture = ExtResource("3_3xa2l")
+
+[node name="Clown1" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(33, -9)
+rotation = 1.5708
+scale = Vector2(0.105958, 0.105958)
+texture = ExtResource("1_euy5p")
+
+[node name="Hellpod" type="Sprite2D" parent="."]
+scale = Vector2(0.28125, 0.28125)
+texture = ExtResource("1_70cw0")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(0, 44)
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_k4tyv")
+texture = ExtResource("3_41ehb")
+lifetime = 0.7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_hyxep")
+
+[node name="DespawnTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="Label" type="Label" parent="."]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 101.0
+offset_top = -394.0
+offset_right = 497.0
+offset_bottom = -349.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = 1.57079
+size_flags_horizontal = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 31
+text = "Name"
+horizontal_alignment = 2
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]

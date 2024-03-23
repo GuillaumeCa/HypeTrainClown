@@ -15,7 +15,8 @@ var config_version = "1.0"
 const default_config = {
 	"username": "",
 	"train_scale": 1.0,
-	"auth": null
+	"auth": null,
+	"enable_raid": false
 }
 
 signal events(type, data)
@@ -27,7 +28,6 @@ func _ready():
 func init_config():
 	if FileAccess.file_exists(config_filename):
 		config = load_config()
-		print(config)
 	else:
 		var cfg = default_config.duplicate()
 		cfg["v"] = config_version
@@ -48,6 +48,11 @@ func load_config() -> Dictionary:
 		var cfg = default_config.duplicate()
 		cfg["v"] = config_version
 		return save_config(cfg)
+	
+	if not "enable_raid" in data:
+		data["enable_raid"] = false
+	
+	save_config(data)
 	
 	return data
 

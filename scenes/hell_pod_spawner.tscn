@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://mff2rjxsmiv5"]
+
+[ext_resource type="Script" path="res://scenes/hell_pod_spawner.gd" id="1_2pq84"]
+[ext_resource type="AudioStream" uid="uid://conrqr3j265hj" path="res://assets/sounds/videoplayback.ogg" id="2_jcflw"]
+
+[node name="HellPodSpawner" type="Node2D"]
+script = ExtResource("1_2pq84")
+
+[node name="RaidSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_jcflw")

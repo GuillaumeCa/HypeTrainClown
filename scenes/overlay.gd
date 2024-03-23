@@ -5,6 +5,7 @@ extends Node2D
 
 @onready var train_path = $TrainPath
 @onready var config = Master.config
+@onready var hell_pod_spawner = $HellPodSpawner
 
 var train_offset = 150
 var train_init_voffset = 10.0
@@ -13,6 +14,10 @@ var speed = 30.0
 var train_scale = 1.0:
 	get:
 		return config["train_scale"]
+
+var enable_raid = false:
+	get:
+		return config["enable_raid"]
 
 var current_speed = 0.0
 
@@ -33,8 +38,15 @@ func handle_events(type: String, data: Dictionary):
 	match type:
 		Master.HYPE_TRAIN_BEGIN_EVENT:
 			hype_mode = true
+			var sub_login = data["last_contribution"]["user_login"]
+			if sub_login in subs:
+				var sub = subs[sub_login]
+				reset_train()
+				add_user(sub["username"], sub["login"], sub["color"])
+				
 		Master.HYPE_TRAIN_PROGRESS_EVENT:
 			hype_mode = true
+
 		Master.HYPE_TRAIN_END_EVENT:
 			hype_mode = false
 			var t = get_tree().create_timer(1)
@@ -62,13 +74,21 @@ func handle_chat_notif(data):
 			if !data[notice_type]["gifter_is_anonymous"]:
 				add_user(data[notice_type]["gifter_user_name"], data[notice_type]["gifter_user_login"])
 			add_user(data["chatter_user_name"], data["chatter_user_login"], data["color"])
-
+		"raid":
+			if enable_raid:
+				var viewers = data[notice_type]["viewer_count"]
+				var raid_channel_user = data[notice_type]["user_name"]
+				hell_pod_spawner.spawn(raid_channel_user, min(viewers, 1500))
 
 func add_user(username, login, color = ""):
 	# if user is already on the train don't add it again
 	if login in subs:
 		return
-	subs[login] = 1
+	subs[login] = { 
+		"username": username, 
+		"login": login, 
+		"color": color 
+	}
 	prints("user", username, "just subbed !")
 	
 	var wagon_idx = 0

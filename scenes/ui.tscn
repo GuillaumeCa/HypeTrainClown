@@ -72,6 +72,10 @@ max_value = 3.0
 step = 0.05
 value = 1.0
 
+[node name="CheckButton" type="CheckButton" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Activer les Raid"
+
 [node name="OpenOverlay" type="Button" parent="Panel/Margin/VBox"]
 layout_mode = 2
 text = "Ouvrir overlay"
@@ -98,6 +102,10 @@ text = "Subscribe"
 [node name="DemoEnd" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
 layout_mode = 2
 text = "Reset"
+
+[node name="DemoRaid" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
+layout_mode = 2
+text = "Raid"
 
 [node name="debug" type="VBoxContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
@@ -132,10 +140,12 @@ scroll_following = true
 
 [connection signal="pressed" from="Panel/Margin/VBox/HBoxInput/Validate" to="." method="_on_validate_pressed"]
 [connection signal="value_changed" from="Panel/Margin/VBox/HBoxContainer/ScaleSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="toggled" from="Panel/Margin/VBox/CheckButton" to="." method="_on_check_button_toggled"]
 [connection signal="pressed" from="Panel/Margin/VBox/OpenOverlay" to="." method="_on_open_overlay_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoStart" to="." method="_on_demo_start_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoSub" to="." method="_on_demo_sub_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoEnd" to="." method="_on_demo_end_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoRaid" to="." method="_on_demo_raid_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/HypeStart" to="." method="_on_hype_start_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/Sub" to="." method="_on_sub_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/HypeEnd" to="." method="_on_hype_end_pressed"]
