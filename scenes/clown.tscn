@@ -1,11 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bx5fj5iwgsjof"]
+[gd_scene load_steps=5 format=3 uid="uid://bx5fj5iwgsjof"]
 
 [ext_resource type="Texture2D" uid="uid://bxvm1vbtih410" path="res://assets/textures/clown_nohair.png" id="1_0hfa8"]
 [ext_resource type="Script" path="res://scenes/clown.gd" id="2_v7ar1"]
 [ext_resource type="Texture2D" uid="uid://dw57fjgytpxsb" path="res://assets/textures/clown_hair.png" id="3_j2gvd"]
+[ext_resource type="FontFile" uid="uid://w8ldxk7rqu6p" path="res://assets/fonts/Saira-BoldItalic.ttf" id="4_fb61l"]
 
 [node name="Clown" type="Sprite2D"]
-position = Vector2(-6.10352e-05, 0)
 scale = Vector2(0.058, 0.058)
 texture = ExtResource("1_0hfa8")
 script = ExtResource("2_v7ar1")
@@ -22,8 +22,11 @@ offset_right = 1547.0
 offset_bottom = -101.0
 rotation = -0.776672
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 80
+theme_override_colors/font_shadow_color = Color(0.0130208, 0.0130208, 0.0130208, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 10
+theme_override_constants/shadow_outline_size = 8
+theme_override_fonts/font = ExtResource("4_fb61l")
 theme_override_font_sizes/font_size = 150
 text = "pseudo"
 

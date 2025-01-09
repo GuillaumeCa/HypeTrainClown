@@ -16,7 +16,9 @@ const default_config = {
 	"username": "",
 	"train_scale": 1.0,
 	"auth": null,
-	"enable_raid": false
+	"sound_lvl": 0.8,
+	"enable_raid": false,
+	"enable_windowed": true,
 }
 
 signal events(type, data)
@@ -49,12 +51,17 @@ func load_config() -> Dictionary:
 		cfg["v"] = config_version
 		return save_config(cfg)
 	
-	if not "enable_raid" in data:
-		data["enable_raid"] = false
+	_set_config_default(data, "enable_raid", false)
+	_set_config_default(data, "enable_windowed", true)
+	_set_config_default(data, "sound_lvl", 0.8)
 	
 	save_config(data)
 	
 	return data
+
+func _set_config_default(config: Dictionary, property: String, default: Variant):
+	if not property in config:
+		config[property] = default
 
 
 func send_event(type: String, data: Dictionary):

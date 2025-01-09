@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://chei1p1yfb286"]
+[gd_scene load_steps=3 format=3 uid="uid://chei1p1yfb286"]
 
 [ext_resource type="Script" path="res://scenes/ui.gd" id="1_ycrwm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pcbkq"]
+bg_color = Color(0.226563, 0.188731, 0.187604, 1)
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -18,6 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pcbkq")
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 1
@@ -72,15 +76,47 @@ max_value = 3.0
 step = 0.05
 value = 1.0
 
-[node name="CheckButton" type="CheckButton" parent="Panel/Margin/VBox"]
+[node name="Label3" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Volume de la musique"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="SoundLvlLabel" type="Label" parent="Panel/Margin/VBox/HBoxContainer3"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "80"
+
+[node name="SoundLvlSlider" type="HSlider" parent="Panel/Margin/VBox/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="EnableRaidButton" type="CheckButton" parent="Panel/Margin/VBox"]
 layout_mode = 2
 text = "Activer les Raid"
 
-[node name="OpenOverlay" type="Button" parent="Panel/Margin/VBox"]
+[node name="EnableWindowedButton" type="CheckButton" parent="Panel/Margin/VBox"]
 layout_mode = 2
-text = "Ouvrir overlay"
+button_pressed = true
+text = "Overlay dans une fenêtre"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="OpenOverlay" type="Button" parent="Panel/Margin/VBox/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ouvrir Overlay"
 
 [node name="demo" type="VBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/Margin/VBox/demo"]
 layout_mode = 2
 
 [node name="Label3" type="Label" parent="Panel/Margin/VBox/demo"]
@@ -92,22 +128,25 @@ layout_mode = 2
 
 [node name="DemoStart" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
 layout_mode = 2
-text = "Start
+text = "Debut HypeTrain
 "
+
+[node name="DemoEnd" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
+layout_mode = 2
+text = "Fin Hypetrain"
 
 [node name="DemoSub" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
 layout_mode = 2
 text = "Subscribe"
-
-[node name="DemoEnd" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
-layout_mode = 2
-text = "Reset"
 
 [node name="DemoRaid" type="Button" parent="Panel/Margin/VBox/demo/DemoMenu"]
 layout_mode = 2
 text = "Raid"
 
 [node name="debug" type="VBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/Margin/VBox/debug"]
 layout_mode = 2
 
 [node name="Label3" type="Label" parent="Panel/Margin/VBox/debug"]
@@ -140,11 +179,13 @@ scroll_following = true
 
 [connection signal="pressed" from="Panel/Margin/VBox/HBoxInput/Validate" to="." method="_on_validate_pressed"]
 [connection signal="value_changed" from="Panel/Margin/VBox/HBoxContainer/ScaleSlider" to="." method="_on_h_slider_value_changed"]
-[connection signal="toggled" from="Panel/Margin/VBox/CheckButton" to="." method="_on_check_button_toggled"]
-[connection signal="pressed" from="Panel/Margin/VBox/OpenOverlay" to="." method="_on_open_overlay_pressed"]
+[connection signal="value_changed" from="Panel/Margin/VBox/HBoxContainer3/SoundLvlSlider" to="." method="_on_sound_lvl_slider_value_changed"]
+[connection signal="toggled" from="Panel/Margin/VBox/EnableRaidButton" to="." method="_on_check_button_toggled"]
+[connection signal="toggled" from="Panel/Margin/VBox/EnableWindowedButton" to="." method="_on_enable_frame_less_button_toggled"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBoxContainer2/OpenOverlay" to="." method="_on_open_overlay_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoStart" to="." method="_on_demo_start_pressed"]
-[connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoSub" to="." method="_on_demo_sub_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoEnd" to="." method="_on_demo_end_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoSub" to="." method="_on_demo_sub_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/demo/DemoMenu/DemoRaid" to="." method="_on_demo_raid_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/HypeStart" to="." method="_on_hype_start_pressed"]
 [connection signal="pressed" from="Panel/Margin/VBox/debug/DebugMenu/Sub" to="." method="_on_sub_pressed"]

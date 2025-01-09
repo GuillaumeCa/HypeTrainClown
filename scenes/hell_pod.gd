@@ -3,9 +3,10 @@ extends Area2D
 @onready var gpu_particles_2d: GPUParticles2D = $GPUParticles2D
 @onready var despawn_timer: Timer = $DespawnTimer
 
-var speed = 120
+var speed = 300
 
 var user_name = ""
+var pod_count = 0
 
 var colors = [
   "#FF0000", # Red
@@ -43,14 +44,20 @@ func _ready() -> void:
 	$Label.hide()
 	if user_name != "":
 		$Label.show()
-		$Label.text = user_name
+		$Label.text = user_name.to_upper()
+		$Label/PodCount.text = "RAID AVEC\n%d PTI' CLOWN" % [pod_count]
 	$ClownHair.modulate = Color(colors.pick_random())
 	
 	speed += randi_range(-20, 20)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	position += transform.y * speed * delta
+	var screen_pos_relative = global_position / get_viewport_rect().size
+	
+	if screen_pos_relative.y > 0.3:
+		gpu_particles_2d.emitting = false
+	
+	position += transform.y * (speed * (1.0 - screen_pos_relative.y * 0.6)) * delta
 
 
 func _on_area_entered(area: Area2D) -> void:

@@ -11,8 +11,10 @@ config_version=5
 [application]
 
 config/name="HypeTrainClown"
+config/version="0.6"
+config/tags=PackedStringArray("tool")
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.2", "GL Compatibility")
+config/features=PackedStringArray("4.3", "GL Compatibility")
 boot_splash/bg_color=Color(0.054902, 0.054902, 0.054902, 1)
 config/icon="res://assets/textures/clown1.png"
 

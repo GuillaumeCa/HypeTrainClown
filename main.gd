@@ -19,7 +19,7 @@ const DEBUG_WS_URL = "ws://127.0.0.1:8080/ws"
 var config
 var username = ""
 
-var window
+var window: Window
 
 var debug = true
 
@@ -175,13 +175,18 @@ func _on_ui_open_overlay():
 		window = null
 		return
 	
+	
 	window = overlay_window_scene.instantiate() as Window
 	window.close_requested.connect(on_close.bind(window))
-	var size = DisplayServer.screen_get_size(DisplayServer.get_primary_screen())
-	window.size = size
+	#var size = DisplayServer.screen_get_size(DisplayServer.get_primary_screen())
+	window.size = Vector2i(1920, 1080)
 	
 	ui.toggle_open_overlay(false)
 	add_child(window)
+	
+	var windowed = config["enable_windowed"]
+	window.mode = Window.MODE_WINDOWED if windowed else Window.MODE_FULLSCREEN
+
 	get_window().grab_focus()
 	
 	
